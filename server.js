@@ -4,7 +4,7 @@ var app = express()
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var mongoose = require('mongoose');
-const env = require('dotenv').config({path: __dirname + '/.env'})
+const db = require('./db');
 
 app.use(express.static(__dirname));
 app.use(bodyParser.json());
@@ -12,50 +12,21 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 mongoose.Promise = Promise;
 
-var userName = process.env['MONGO_USER']
-var userPassword = process.env['MONGO_PASS'];
-var clusterName = process.env['MONGO_CLUSTER'];
-var dbName = process.env['MONGO_DB_NAME'];
-
-var dbUrl = `mongodb+srv://${userName}:${userPassword}@${clusterName}.jzutb.mongodb.net/${dbName}?retryWrites=true&w=majority`
-
-var Message = mongoose.model('Message', {
-    name: String,
-    message: String
-});
-
 app.get('/messages', (req, res) =>{
-    Message.find({}, (err, messages) => {
-        res.send(messages);
-    })
+    db.getAllMessages( (messages) => res.json(messages));
 })
 
 app.get('/messages/:user', (req, res) =>{
     var user = req.params.user;
 
-    Message.find({name: user}, (err, messages) => {
-        res.send(messages);
-    })
+    db.getAllMessagesFromUser(user, (messages) => res.json(messages))
 })
 
 app.post('/messages', async (req, res) => {
-
     try {
-
-        var message = new Message(req.body);
-
-        var savedMessage = message.save()
-        
-        console.log('saved')
-        var censored =  await Message.findOne({message: 'badword'})
-        
-        if (censored)
-            await Message.remove({_id: censored.id});
-        else 
-            io.emit('message', req.body);
-            
+        db.addNewMessage(req.body);    
+        io.emit('message', req.body);
         res.sendStatus(200);
-
     } catch (error) {
         res.sendStatus(500);
         return console.error(error);
@@ -68,18 +39,8 @@ io.on('connection', (socket) => {
     console.log(' a user connected')
 })
 
-mongoose.connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true} ,(err) => {
-    if (err) {
-        console.error(err.message);
-        throw err;
-    }
-    else {
-        console.log('mongo db connection - SUCCESSFUL');
-    }
-    
-})
+db.connect();
 
 var server = http.listen(process.env.PORT || 3000, () => {
     console.log('server is listening on port', server.address().port)
 })
-
