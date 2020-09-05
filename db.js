@@ -43,6 +43,13 @@ function getAllMessages(callback) {
     });
 }
 
+function getAllMessagesFromUser(user, callback) {
+    Message.find({name: user}, (err, messages) => {
+        if (err) throw err
+        callback(messages);
+    });
+}
+
 function getMessageModel() {
     return Message;
 }
@@ -50,5 +57,6 @@ function getMessageModel() {
 module.exports = { 
     connect,
     getAllMessages,
+    getAllMessagesFromUser,
     getMessageModel
 };
