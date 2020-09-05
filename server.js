@@ -4,7 +4,6 @@ var app = express()
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var mongoose = require('mongoose');
-// const env = require('dotenv').config({path: __dirname + '/.env'})
 const db = require('./db');
 
 app.use(express.static(__dirname));
@@ -36,7 +35,7 @@ app.post('/messages', async (req, res) => {
     try {    
         var message = new Message(req.body);
 
-        var savedMessage = message.save()
+        message.save()
         
         console.log('saved')
         var censored =  await Message.findOne({message: 'badword'})
