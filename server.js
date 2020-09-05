@@ -12,8 +12,6 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 mongoose.Promise = Promise;
 
-var Message = db.getMessageModel();
-
 app.get('/messages', (req, res) =>{
     db.getAllMessages( (messages) => res.json(messages));
 })
@@ -25,21 +23,10 @@ app.get('/messages/:user', (req, res) =>{
 })
 
 app.post('/messages', async (req, res) => {
-    try {    
-        var message = new Message(req.body);
-
-        message.save()
-        
-        console.log('saved')
-        var censored =  await Message.findOne({message: 'badword'})
-        
-        if (censored)
-            await Message.remove({_id: censored.id});
-        else 
-            io.emit('message', req.body);
-            
+    try {
+        db.addNewMessage(req.body);    
+        io.emit('message', req.body);
         res.sendStatus(200);
-
     } catch (error) {
         res.sendStatus(500);
         return console.error(error);

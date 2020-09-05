@@ -34,7 +34,7 @@ function connect() {
 
 /**
  * Retrieves all messages from server.
- * @param: callback function to call when results are retrieved
+ * @param {*} Callback Function to call when results are retrieved
  */
 function getAllMessages(callback) {
     Message.find((err, messages) => {
@@ -43,6 +43,11 @@ function getAllMessages(callback) {
     });
 }
 
+/**
+ * Retrieves messages from server belonging to a particular user.
+ * @param {*} user The name of the user to be retrieved
+ * @param {*} callback Function to call when results are retrieved
+ */
 function getAllMessagesFromUser(user, callback) {
     Message.find({name: user}, (err, messages) => {
         if (err) throw err
@@ -50,13 +55,18 @@ function getAllMessagesFromUser(user, callback) {
     });
 }
 
-function getMessageModel() {
-    return Message;
+/**
+ * Adds new message record to database
+ * @param {*} content Message content to be saved. 
+ */
+function addNewMessage(content) {
+    var message = new Message(content);
+    message.save();
 }
 
 module.exports = { 
     connect,
     getAllMessages,
     getAllMessagesFromUser,
-    getMessageModel
+    addNewMessage
 };
