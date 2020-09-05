@@ -12,15 +12,10 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 mongoose.Promise = Promise;
 
-var Message = mongoose.model('Message', {
-    name: String,
-    message: String
-});
+var Message = db.getMessageModel();
 
 app.get('/messages', (req, res) =>{
-    Message.find({}, (err, messages) => {
-        res.send(messages);
-    })
+    db.getAllMessages( (messages) => res.json(messages));
 })
 
 app.get('/messages/:user', (req, res) =>{

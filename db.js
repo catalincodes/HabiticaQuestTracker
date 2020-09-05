@@ -12,6 +12,14 @@ const dbCredentials = {
 
 var dbUrl = `mongodb+srv://${dbCredentials["userName"]}:${dbCredentials["userPassword"]}@${dbCredentials["clusterName"]}.jzutb.mongodb.net/${dbCredentials["dbName"]}?retryWrites=true&w=majority`;
 
+var Message = mongoose.model('Message', {
+    name: String,
+    message: String
+});
+
+/**
+ * Connects to the Mongo database using the credentials from ENV
+ */
 function connect() {
     mongoose.connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true} ,(err) => {
         if (err) {
@@ -24,4 +32,23 @@ function connect() {
     })
 }
 
-module.exports = { connect };
+/**
+ * Retrieves all messages from server.
+ * @param: callback function to call when results are retrieved
+ */
+function getAllMessages(callback) {
+    Message.find((err, messages) => {
+        if (err) throw err
+        callback(messages);
+    });
+}
+
+function getMessageModel() {
+    return Message;
+}
+
+module.exports = { 
+    connect,
+    getAllMessages,
+    getMessageModel
+};

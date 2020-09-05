@@ -1,11 +1,5 @@
 var request = require('request');
 
-describe('calc', ()=> {
-    it('should multiply 2 and 2', ()=> {
-        expect(2*2).toBe(4);
-    })
-})
-
 describe('get messages', ()=> {
     it('should return 200 OK', (done)=> {
         request.get('http://localhost:3000/messages', (err, res) => {
@@ -24,14 +18,14 @@ describe('get messages', ()=> {
 
 describe('get messages from user', ()=> {
     it('should return 200 OK', (done)=> {
-        request.get('http://localhost:3000/messages/tim', (err, res) => {
+        request.get('http://localhost:3000/messages/Cat', (err, res) => {
             expect(res.statusCode).toEqual(200);
             done();
         })
     })
-    it('name should be Tim', (done)=> {
-        request.get('http://localhost:3000/messages/tim', (err, res) => {
-            expect( JSON.parse(res.body)[0].name).toEqual('tim');
+    it('name should be Cat', (done)=> {
+        request.get('http://localhost:3000/messages/Cat', (err, res) => {
+            expect( JSON.parse(res.body)[0].name).toEqual('Cat');
             done();
         })
     })
