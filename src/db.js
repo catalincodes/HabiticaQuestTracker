@@ -58,7 +58,7 @@ function getAllMessagesFromUser(user, callback) {
 
 /**
  * Adds new message record to database
- * @param {*} content Message content to be saved. 
+ * @param {*} content Message content to be saved.
  */
 function addNewMessage(content) {
   const message = new Message(content);
