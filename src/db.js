@@ -1,16 +1,9 @@
 const mongoose = require('mongoose');
-require('dotenv').config({path: __dirname + '/.env'});
+const config = require('../config.json');
 
 mongoose.Promise = Promise;
 
-const dbCredentials = {
-  'userName': process.env['MONGO_USER'],
-  'userPassword': process.env['MONGO_PASS'],
-  'clusterName': process.env['MONGO_CLUSTER'],
-  'dbName': process.env['MONGO_DB_NAME'],
-};
-
-const dbUrl = `mongodb+srv://${dbCredentials['userName']}:${dbCredentials['userPassword']}@${dbCredentials['clusterName']}.jzutb.mongodb.net/${dbCredentials['dbName']}?retryWrites=true&w=majority`;
+const dbUrl = `mongodb+srv://${config.MONGO_USER}:${config.MONGO_PASS}@${config.MONGO_CLUSTER}.jzutb.mongodb.net/${config.MONGO_DB_NAME}?retryWrites=true&w=majority`;
 
 const Message = mongoose.model('Message', {
   name: String,
